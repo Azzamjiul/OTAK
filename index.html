@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Otak Viewer</title>
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PDle/QlgIONtM1aqA2Qemk5gPOE7wFq8+Em+G/hmo5Iq0CCmYZLv3fVRDJ4MMwEA" crossorigin="anonymous">
+		<style type="text/css">
+			html, body{
+				width: 100%;
+				height: 100%;
+			}
+			.innerside{
+				background: #000;
+				padding-top: 100%;
+				position: relative;
+			}
+			.innerctn{
+				position: absolute;
+				top:0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<div style="height:100%;width: 100%;display: flex;align-items: center">
+			<div class="container">
+				<h1>Viewer Otak XYZ</h1><br>
+				<div class="row">
+					<div class="col-4">
+						<div class="innerside">
+							<div class="innerctn">
+								<canvas id="gambarx" style="width: 100%;height: 100%;"></canvas>
+							</div>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="innerside">
+							<div class="innerctn">
+								<canvas id="gambary" style="width: 100%;height: 100%;"></canvas>
+							</div>
+						</div>
+					</div>
+					<div class="col-4">
+						<div class="innerside">
+							<div class="innerctn">
+								<canvas id="gambarz" style="width: 100%;height: 100%;"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/js/bootstrap.min.js" integrity="sha384-7aThvCh9TypR7fIc2HV4O/nFMVCBwyIUKL8XCtKE+8xgCgl/PQGuFsvShjr74PBp" crossorigin="anonymous"></script>
+		<script type="text/javascript">
+			(function(){
+				var maxslice = 512;
+
+
+				var canvasx = document.getElementById("gambarx");
+				var canvasy = document.getElementById("gambary");
+				var canvasz = document.getElementById("gambarz");
+				var cx = canvasx.getContext('2d');
+				var cy = canvasy.getContext('2d');
+				var cz = canvasz.getContext('2d');
+				cx.font = "30px Arial";
+				cy.font = "30px Arial";
+				cz.font = "30px Arial";
+				cx.fillStyle = "white";
+				cy.fillStyle = "white";
+				cz.fillStyle = "white";
+				cx.textAlign = "center";
+				cy.textAlign = "center";
+				cz.textAlign = "center";
+				
+				// cx.fillText('X',canvasx.width/2,canvasx.height/2);
+				// cy.fillText('Y',canvasy.width/2,canvasy.height/2);
+				// cz.fillText('Z',canvasz.width/2,canvasz.height/2);
+
+				function writeCanvas(canvas, ctx, number){
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					ctx.fillText(number, canvas.width/2, canvas.height/2);
+				}
+
+				function map(x, in_min, in_max, out_min, out_max){
+				 	return Math.round((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+				}
+
+				writeCanvas(canvasx, cx, 0);
+				writeCanvas(canvasy, cy, 0);
+				writeCanvas(canvasz, cz, 0);
+
+				canvasx.onmousemove = function(){
+					if(event.buttons & 1){
+						var rect = event.target.getBoundingClientRect();
+						var x = event.clientX - rect.left; //x position within the element.
+						var y = event.clientY - rect.top;  //y position within the element.
+						writeCanvas(canvasy, cy, map(x,0,rect.width,0,maxslice));
+						writeCanvas(canvasz, cz, map(y,0,rect.width,0,maxslice));
+					}
+				}
+				canvasy.onmousemove = function(){
+					if(event.buttons & 1){
+						var rect = event.target.getBoundingClientRect();
+						var x = event.clientX - rect.left; //x position within the element.
+						var y = event.clientY - rect.top;  //y position within the element.
+						writeCanvas(canvasx, cx, map(x,0,rect.width,0,maxslice));
+						writeCanvas(canvasz, cz, map(y,0,rect.width,0,maxslice));
+					}
+				}
+				canvasz.onmousemove = function(){
+					if(event.buttons & 1){
+						var rect = event.target.getBoundingClientRect();
+						var x = event.clientX - rect.left; //x position within the element.
+						var y = event.clientY - rect.top;  //y position within the element.
+						writeCanvas(canvasx, cx, map(x,0,rect.width,0,maxslice));
+						writeCanvas(canvasy, cy, map(y,0,rect.width,0,maxslice));
+					}
+				}
+			}());
+		</script>
+	</body>
+</html>
